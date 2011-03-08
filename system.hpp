@@ -22,41 +22,48 @@
 #include <investment.hpp>
 
 namespace plsim {
+  class Tick {
+    std::string symbol_;
+    posixct timestamp_;
+    double bid_;
+    double ask_;
+  public:
+    Tick(std::string symbol, posixct timestamp, double bid, double ask) symbol_(symbol), timestamp_(timestamp), bid_(bid), ask_(ask) {}
+  };
 
   typedef double posixct;
+  typedef std::map<std::string,tick*> Market;
 
   class Order {
   private:
     Instrument& i_;
   public:
     Order(Instrument& i) i_(i) {}
-    virtual void condition();
-    virtual void cancel_condition();
+    virtual const bool condition(Market& m);
+    virtual bool cancel_condition(Market& m);
     virtual void action();
   };
 
   class System {
-    Trades trades;
-    Orders orders;
-    Positions positions;
-
-    Ticks collectTicks(vector<instrument>& instruments) {
-      // merge all instruments into one table
-      // of all ticks
-    }
+    std::vector<Trade> trades;
+    std::vector<Order> orders;
+    std::vector<Position> positions;
+    Market m;
     public:
-    void run(vector<instrument> instruments, posixct start, posixct end) {
-      vector<posixct> ticks(collectTicks(instruments));
-      for(i = 0; i < ticks.size(); i++) {
-	for(j = 0; j < orders.size(); j++) {
-	  evalOrder(instruments,ticks[i],orders[j]);
+    void run(const vector<Ticks>& ticks) {
+      for(vector<Ticks>::const_iterator tick = ticks.begin(); tick != ticks.end(); tick++) {
+	// update price
+	mkt[tick.symbol_;] = &tick;
+	for(vector<Order>::iterator order = orders.begin(); order != orders.end(); order++) {
+	  if(order.eval(mkt)) {
+	    order.action();
+	  }
 	}
 	// fixme: fire each inst tick separately
 	// assuming there will be many cases of ties
-	processTick(t[i])
+	processTick(t[i]);
       }
     }
-
     std::ostream& operator<< (std::ostream& os, const Trade& t) {
       os << positions << std::endl << orders_ << endl;
     }
