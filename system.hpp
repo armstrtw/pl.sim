@@ -28,11 +28,21 @@ namespace plsim {
 
   class System {
     std::vector<Trade> trades;
-    std::vector<Order> orders;
+    std::vector<Order*> orders;
     std::vector<Position> positions;
     Market m;
-    public:
-    void placeOrder(Order o) { orders.push_back(o); }
+    void updateMarket(tick) {
+      // update price
+      mkt[tick.symbol] = tick;
+    }
+    void processOrders() {
+      for(size_t i = 0; i < orders.size(); i++) {
+	if(orders[i]->eval(m)) {
+	  fillOrder(orders[i],tick->timestamp);
+	}
+      }
+    }
+    void placeOrder(Order* o) { orders.push_back(o); }
     void fillOrder(const Order& o, posixt timestamp) {
       double exec_price;
       if(o.quantity > 0) {
@@ -42,22 +52,18 @@ namespace plsim {
       }
       trades.push_back(Trade(o.symbol, timestamp, o.quantity, exec_price));
     }
+    virtual void processTick(const Tick& t) = 0;
+  public:
     void run(const std::vector<Ticks>& ticks) {
       for(std::vector<Ticks>::const_iterator tick = ticks.begin(); tick != ticks.end(); tick++) {
-	// update price
-	mkt[tick.symbol] = tick;
-	for(std::vector<Order>::iterator order = orders.begin(); order != orders.end(); order++) {
-	  if(order->eval(m)) {
-	    fillOrder(order,tick->timestamp);
-	  }
-	}
+	updateMarket(tick);
+	processOrders();
 	processTick(*tick);
       }
     }
     std::ostream& operator<< (std::ostream& os, const Trade& t) {
       os << positions << std::endl << orders_ << endl;
     }
-    virtual void processTick(const Tick& t) {}
   };
 }  // namespace plsim
 
