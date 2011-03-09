@@ -25,13 +25,13 @@ namespace plsim {
 
   class Trade {
   public:
-    string ticker;
+    string symbol;
     posixct timestamp;
     double quantity;
     double price;
-    Trade(string ticker_,double timestamp_,double quantity_,double price_): ticker(ticker_), timestamp(timestamp_), quantity(quantity_), price(price_) {}
+    Trade(string symbol_,double timestamp_,double quantity_,double price_): symbol(symbol_), timestamp(timestamp_), quantity(quantity_), price(price_) {}
     std::ostream& operator<< (std::ostream& os, const Trade& t) {
-      os << ticker << "|" << timestamp << "|" << quantity << "|" << price << std::endl;
+      os << symbol << "|" << timestamp << "|" << quantity << "|" << price << std::endl;
     }
   };
 }  // namespace plsim

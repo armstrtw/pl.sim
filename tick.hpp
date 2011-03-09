@@ -15,50 +15,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>. //
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef SYSTEM_HPP
-#define SYSTEM_HPP
+#ifndef TICK_HPP
+#define TICK_HPP
 
-#include <iostream>
-#include <vector>
-#include <simple.defs.hpp>
-#include <tick.hpp>
-#include <order.hpp>
+#include <string>
 
 namespace plsim {
 
-  class System {
-    std::vector<Trade> trades;
-    std::vector<Order> orders;
-    std::vector<Position> positions;
-    Market m;
-    public:
-    void placeOrder(Order o) { orders.push_back(o); }
-    void fillOrder(const Order& o, posixt timestamp) {
-      double exec_price;
-      if(o.quantity > 0) {
-	exec_price = m[o.symbol]->ask;
-      } else {
-	exec_price = m[o.symbol]->bid;
-      }
-      trades.push_back(Trade(o.symbol, timestamp, o.quantity, exec_price));
-    }
-    void run(const std::vector<Ticks>& ticks) {
-      for(std::vector<Ticks>::const_iterator tick = ticks.begin(); tick != ticks.end(); tick++) {
-	// update price
-	mkt[tick.symbol] = tick;
-	for(std::vector<Order>::iterator order = orders.begin(); order != orders.end(); order++) {
-	  if(order->eval(m)) {
-	    fillOrder(order,tick->timestamp);
-	  }
-	}
-	processTick(*tick);
-      }
-    }
-    std::ostream& operator<< (std::ostream& os, const Trade& t) {
-      os << positions << std::endl << orders_ << endl;
-    }
-    virtual void processTick(const Tick& t) {}
+  class Tick {
+  public:
+    std::string symbol;
+    posixct timestamp;
+    double bid;
+    double ask;
+    Tick(std::string symbol_, posixct timestamp_, double bid_, double ask_):
+      symbol(symbol_), timestamp(timestamp_), bid(bid_), ask(ask_) {}
   };
-}  // namespace plsim
 
-#endif //SYSTEM_HPP
+} // namespace plsim
+#endif //TICK_HPP
