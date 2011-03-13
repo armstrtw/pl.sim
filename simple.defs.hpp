@@ -18,11 +18,7 @@
 #ifndef SIMPLE_DEFS_HPP
 #define SIMPLE_DEFS_HPP
 
-#include <map>
-#include <tick.hpp>
-
 namespace plsim {
   typedef double posixct;
-  typedef std::map<std::string,tick*> Market;
 } // namespace plsim
 #endif //SIMPLE_DEFS_HPP

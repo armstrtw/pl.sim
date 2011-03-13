@@ -18,20 +18,19 @@
 #ifndef TRADE_HPP
 #define TRADE_HPP
 
+#include <string>
 #include <iostream>
-#include <investment.hpp>
 
 namespace plsim {
-
   class Trade {
   public:
-    string symbol;
+    std::string symbol;
     posixct timestamp;
     double quantity;
     double price;
-    Trade(string symbol_,double timestamp_,double quantity_,double price_): symbol(symbol_), timestamp(timestamp_), quantity(quantity_), price(price_) {}
-    std::ostream& operator<< (std::ostream& os, const Trade& t) {
-      os << symbol << "|" << timestamp << "|" << quantity << "|" << price << std::endl;
+    Trade(std::string symbol_, posixct timestamp_, double quantity_, double price_): symbol(symbol_), timestamp(timestamp_), quantity(quantity_), price(price_) {}
+    friend std::ostream& operator<< (std::ostream& os, const Trade& t) {
+      os << t.symbol << "|" << t.timestamp << "|" << t.quantity << "|" << t.price << std::endl;
     }
   };
 }  // namespace plsim

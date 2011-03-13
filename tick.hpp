@@ -19,6 +19,7 @@
 #define TICK_HPP
 
 #include <string>
+#include <simple.defs.hpp>
 
 namespace plsim {
 

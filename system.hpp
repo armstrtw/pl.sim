@@ -21,48 +21,57 @@
 #include <iostream>
 #include <vector>
 #include <simple.defs.hpp>
+#include <market.hpp>
+#include <positions.hpp>
 #include <tick.hpp>
 #include <order.hpp>
+#include <trade.hpp>
 
 namespace plsim {
 
   class System {
+  protected:
     std::vector<Trade> trades;
     std::vector<Order*> orders;
-    std::vector<Position> positions;
-    Market m;
-    void updateMarket(tick) {
+    Positions positions;
+    Market market;
+    posixct timestamp;
+
+    void updateMarket(const Tick& tick) {
       // update price
-      mkt[tick.symbol] = tick;
+      market[tick.symbol] = const_cast<Tick*>(&tick);
+      // update time
+      timestamp = tick.timestamp;
     }
     void processOrders() {
       for(size_t i = 0; i < orders.size(); i++) {
-	if(orders[i]->eval(m)) {
-	  fillOrder(orders[i],tick->timestamp);
+	if(orders[i]->eval(market)) {
+	  fillOrder(*orders[i],timestamp);
 	}
       }
     }
     void placeOrder(Order* o) { orders.push_back(o); }
-    void fillOrder(const Order& o, posixt timestamp) {
+    void fillOrder(const Order& o, const posixct timestamp) {
       double exec_price;
       if(o.quantity > 0) {
-	exec_price = m[o.symbol]->ask;
+	exec_price = market[o.symbol]->ask;
       } else {
-	exec_price = m[o.symbol]->bid;
+	exec_price = market[o.symbol]->bid;
       }
       trades.push_back(Trade(o.symbol, timestamp, o.quantity, exec_price));
     }
     virtual void processTick(const Tick& t) = 0;
   public:
-    void run(const std::vector<Ticks>& ticks) {
-      for(std::vector<Ticks>::const_iterator tick = ticks.begin(); tick != ticks.end(); tick++) {
-	updateMarket(tick);
+    void run(const std::vector<Tick>& ticks) {
+      for(std::vector<Tick>::const_iterator tick = ticks.begin(); tick != ticks.end(); tick++) {
+	updateMarket(*tick);
 	processOrders();
 	processTick(*tick);
       }
     }
-    std::ostream& operator<< (std::ostream& os, const Trade& t) {
-      os << positions << std::endl << orders_ << endl;
+    friend std::ostream& operator<< (std::ostream& os, const System& s) {
+      // os << s.positions << std::endl << s.orders_ << endl;
+      os << "not implemented" << std::endl;
     }
   };
 }  // namespace plsim

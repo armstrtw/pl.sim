@@ -15,25 +15,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>. //
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef ORDER_HPP
-#define ORDER_HPP
+#ifndef POSITIONS_HPP
+#define POSITIONS_HPP
 
-#include <string>
-#include <simple.defs.hpp>
-#include <market.hpp>
+#include <map>
 
 namespace plsim {
-
-  class Order {
-  public:
-    const std::string symbol;
-    const double quantity;
-    bool canceled;
-
-    Order(const std::string symbol_, const double quantity_): symbol(symbol_), quantity(quantity_), canceled(false) {}
-    void cancel() { canceled = true; }
-    virtual const bool eval(const Market& m) = 0;
-  };
-
+  typedef std::map<std::string,double> Positions;
 } // namespace plsim
-#endif //ORDER_HPP
+#endif //POSITIONS_HPP
