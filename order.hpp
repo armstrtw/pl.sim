@@ -19,7 +19,6 @@
 #define ORDER_HPP
 
 #include <string>
-#include <simple.defs.hpp>
 #include <market.hpp>
 
 namespace plsim {

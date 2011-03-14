@@ -20,7 +20,6 @@
 
 #include <iostream>
 #include <vector>
-#include <simple.defs.hpp>
 #include <market.hpp>
 #include <positions.hpp>
 #include <tick.hpp>
@@ -35,7 +34,7 @@ namespace plsim {
     std::vector<Order*> orders;
     Positions positions;
     Market market;
-    posixct timestamp;
+    ptime timestamp;
 
     void updateMarket(const Tick& tick) {
       // update price
@@ -51,7 +50,7 @@ namespace plsim {
       }
     }
     void placeOrder(Order* o) { orders.push_back(o); }
-    void fillOrder(const Order& o, const posixct timestamp) {
+    void fillOrder(const Order& o, const ptime timestamp) {
       double exec_price;
       if(o.quantity > 0) {
 	exec_price = market[o.symbol]->ask;

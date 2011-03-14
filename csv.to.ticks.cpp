@@ -1,5 +1,5 @@
 
-void ticks2csv(std::string fname, std::string splitter, vector<Tick>& ticks) {
+void csv2ticks(std::string fname, std::string splitter, vector<Tick>& ticks) {
   ifstream fin;
   string buf;
   vector<string> splitbuf;
@@ -12,7 +12,7 @@ void ticks2csv(std::string fname, std::string splitter, vector<Tick>& ticks) {
 
   while(getline(fin, buf)) {
     boost::split(splitbuf, buf, boost::is_any_of(splitter));
-    ticks.push_back(Tick(splitbuf[2],toposixct(splitbuf[0]+splitbuf[3]),splitbuf[4],splitbuf[5]))
-      }
+    ticks.push_back(Tick(splitbuf[1],toposixct(splitbuf[0]),splitbuf[2],splitbuf[3]));
+  }
   fin.close();
 }

@@ -19,17 +19,18 @@
 #define TICK_HPP
 
 #include <string>
-#include <simple.defs.hpp>
+#include "boost/date_time/posix_time/posix_time.hpp"
 
 namespace plsim {
+  using namespace boost::posix_time;
 
   class Tick {
   public:
     std::string symbol;
-    posixct timestamp;
+    ptime timestamp;
     double bid;
     double ask;
-    Tick(std::string symbol_, posixct timestamp_, double bid_, double ask_):
+    Tick(std::string symbol_, ptime timestamp_, double bid_, double ask_):
       symbol(symbol_), timestamp(timestamp_), bid(bid_), ask(ask_) {}
   };
 
