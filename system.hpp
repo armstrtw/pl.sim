@@ -71,6 +71,7 @@ namespace plsim {
     friend std::ostream& operator<< (std::ostream& os, const System& s) {
       // os << s.positions << std::endl << s.orders_ << endl;
       os << "not implemented" << std::endl;
+      return os;
     }
   };
 }  // namespace plsim
