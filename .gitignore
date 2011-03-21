@@ -5,3 +5,5 @@
 *.o
 *.so
 a.out
+*.pb.cc
+*.pb.h

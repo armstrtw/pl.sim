@@ -1,0 +1,12 @@
+package plsim;
+
+message Tick {
+  required string symbol = 1;
+  required sfixed64 timestamp = 2;
+  required double bid = 3;
+  required double ask = 4;
+}
+
+message TickStream {
+  repeated Tick tick = 1;
+}
