@@ -28,6 +28,7 @@ namespace plsim {
     const std::string symbol;
     const double quantity;
     bool canceled;
+    bool filled;
 
     Order(const std::string symbol_, const double quantity_): symbol(symbol_), quantity(quantity_), canceled(false) {}
     void cancel() { canceled = true; }

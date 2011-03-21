@@ -1,3 +1,5 @@
+#define DEBUG
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -23,8 +25,8 @@ public:
 
 class Hats : public System {
   void processTick(const Tick& t) {
-    if(t.symbol == "USDJPY" && orders.size() < 100) {
-      placeOrder(new BuyLimit("USDJPY",100, 101.99));
+    if(t.symbol == "USDJPY" && orders.size() < 10) {
+      placeOrder(new BuyLimit("USDJPY",1e6, t.ask));
     }
   }
 };
@@ -49,7 +51,7 @@ void csv2ticks(const std::string fname, const std::string splitter, std::vector<
 
 int main() {
   std::vector<Tick> tickstream;
-  csv2ticks("/var/archive/work/data/barclays.tick.data/tick.stream.csv", ",", tickstream);
+  csv2ticks("/var/archive/work/data/barclays.tick.data/tick.stream.short.csv", ",", tickstream);
   Hats h();
   //h.run(tickstream);
 }

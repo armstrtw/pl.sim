@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 #include <market.hpp>
 #include <positions.hpp>
 #include <tick.hpp>
@@ -28,10 +29,12 @@
 
 namespace plsim {
 
+  bool filled_or_canceled(Order* o) { return (o->filled || o->canceled) ? true : false; }
+
   class System {
   protected:
     std::vector<Trade> trades;
-    std::vector<Order*> orders;
+    std::list<Order*> orders;
     Positions positions;
     Market market;
     ptime timestamp;
@@ -43,21 +46,30 @@ namespace plsim {
       timestamp = tick.timestamp;
     }
     void processOrders() {
-      for(size_t i = 0; i < orders.size(); i++) {
-	if(orders[i]->eval(market)) {
-	  fillOrder(*orders[i],timestamp);
+      //for(size_t i = 0; i < orders.size(); i++) {
+      for(std::list<Order*>::iterator o = orders.begin(); o != orders.end(); o++) {
+	if((*o)->eval(market)) {
+	  fillOrder(*o,timestamp);
 	}
       }
+      // remove filled/canceled orders
+      //remove_if(orders.begin(), orders.end(), filled_or_canceled)
+      orders.remove_if(filled_or_canceled);
     }
     void placeOrder(Order* o) { orders.push_back(o); }
-    void fillOrder(const Order& o, const ptime timestamp) {
+    void fillOrder(Order* o, const ptime timestamp) {
       double exec_price;
-      if(o.quantity > 0) {
-	exec_price = market[o.symbol]->ask;
+      if(o->quantity > 0) {
+	exec_price = market[o->symbol]->ask;
       } else {
-	exec_price = market[o.symbol]->bid;
+	exec_price = market[o->symbol]->bid;
       }
-      trades.push_back(Trade(o.symbol, timestamp, o.quantity, exec_price));
+      o->filled = true;
+#ifdef DEBUG
+      std::cout << "adding Trade:" <<
+	o->symbol << " " << timestamp << " " << " " << o->quantity << " " << exec_price << std::endl;
+#endif
+      trades.push_back(Trade(o->symbol, timestamp, o->quantity, exec_price));
     }
     virtual void processTick(const Tick& t) = 0;
   public:
